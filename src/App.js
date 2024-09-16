@@ -1,25 +1,94 @@
-import logo from './logo.svg';
+import React from "react";
+import { useState, useEffect } from "react";
 import './App.css';
+import MusicCard from "./MusicCard";
+import SearchIcon from './search.svg';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const API_KEY = "89838bf2d11d62f073e2804007089934";
+const API_URL = "https://ws.audioscrobbler.com/2.0/";
+
+const music1 = {
+        "name": "Starving",
+        "artist": "Hailee Steinfeld",
+        "url": "https://www.last.fm/music/Hailee+Steinfeld/_/Starving",
+        "streamable": "FIXME",
+        "listeners": "420889",
+        "image": [
+            {
+                "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png",
+                "size": "small"
+            },
+            {
+                "#text": "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png",
+                "size": "medium"
+            },
+            {
+                "#text": "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png",
+                "size": "large"
+            },
+            {
+                "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png",
+                "size": "extralarge"
+            }
+        ],
+        "mbid": ""
+}
+
+const App = () => {
+    const [musics, setMusic] = useState([]);
+
+    const searchMusic = async (title) => {
+        try {
+            const response = await fetch(`${API_URL}?method=track.search&track=${title}&api_key=${API_KEY}&format=json`);
+            const data = await response.json();
+            console.log("API response:",data);//log the entire response object
+            console.log(data.results.trackmatches.track);//log specific array from the response
+            setMusic(data.results.trackmatches.track); // Adjust based on API response structure
+        } catch (error) {
+            console.error("Error fetching music data:", error);
+        }
+    }
+
+    useEffect(() => {
+        searchMusic('Starving');
+    }, []);
+
+    return (
+        <div className="app">
+            <h1>Musika</h1>
+
+            <div className="search">
+                <input
+                    type="text"
+                    placeholder="Search for music"
+                    value="Starving"
+                    onChange={e => searchMusic(e.target.value)}
+                />
+                <img 
+                src={SearchIcon}
+                alt="search"
+                onClick={() => {} }
+                />
+            </div>
+
+            {
+                musics?.length>0
+                ?(
+                    <div className="container">
+                    {musics.map((music) => (
+                        <MusicCard music={music}/>
+                    ))}
+                 </div>
+                ):(
+                    <div className="empty">
+                        <h2>No music found</h2>
+                    </div>
+                )
+            }
+
+
+        </div>
+    );
 }
 
 export default App;
