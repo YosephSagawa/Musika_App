@@ -7,36 +7,10 @@ import SearchIcon from './search.svg';
 const API_KEY = "89838bf2d11d62f073e2804007089934";
 const API_URL = "https://ws.audioscrobbler.com/2.0/";
 
-const music1 = {
-        "name": "Starving",
-        "artist": "Hailee Steinfeld",
-        "url": "https://www.last.fm/music/Hailee+Steinfeld/_/Starving",
-        "streamable": "FIXME",
-        "listeners": "420889",
-        "image": [
-            {
-                "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png",
-                "size": "small"
-            },
-            {
-                "#text": "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png",
-                "size": "medium"
-            },
-            {
-                "#text": "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png",
-                "size": "large"
-            },
-            {
-                "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png",
-                "size": "extralarge"
-            }
-        ],
-        "mbid": ""
-}
 
 const App = () => {
     const [musics, setMusic] = useState([]);
-
+    const[searchTerm, setSearchTerm] = useState('');
     const searchMusic = async (title) => {
         try {
             const response = await fetch(`${API_URL}?method=track.search&track=${title}&api_key=${API_KEY}&format=json`);
@@ -61,13 +35,13 @@ const App = () => {
                 <input
                     type="text"
                     placeholder="Search for music"
-                    value="Starving"
-                    onChange={e => searchMusic(e.target.value)}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <img 
                 src={SearchIcon}
                 alt="search"
-                onClick={() => {} }
+                onClick={() => searchMusic(searchTerm) }
                 />
             </div>
 

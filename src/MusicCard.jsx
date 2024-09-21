@@ -8,7 +8,7 @@ const MusicCard = ({ music}) => {
             </div>
 
             <div>
-                <img src={music.image !== "null" ? music.image[2]["#text"]:"https://via.placeholder.com/400"} alt={music.name} />
+                <img src={Array.isArray(music.image) && music.image.length >2 ? music.image[2]["#text"]:"https://via.placeholder.com/400"} alt={music.name} />
             </div>
             <div>
                 <span>Listeners:{music.listeners}</span>
