@@ -28,17 +28,17 @@ const App = () => {
 
     const handleAdd = (music) => {
         const isAlreadyInPlaylist = playlist.some(
-            (track) => track.mbid === music.mbid || (track.name === music.name && track.artist === music.artist)
+            (track) => track.listeners === music.listeners && track.name === music.name
         );
-        
+    
         if (isAlreadyInPlaylist) {
             setMessage(`${music.name} is already in the playlist!`);
         } else {
-            setPlaylist([...playlist, music]);
-            setMessage(`${music.name} successfully added to playlist!`);
+            setPlaylist([...playlist, music]); 
+            setMessage(`${music.name} successfully added to playlist! Scroll down to view.`);
         }
     
-        setTimeout(() => setMessage(''), 3000); // Clear message after 3 seconds
+        setTimeout(() => setMessage(''), 3000);
     };
     const handleDeleteFromPlaylist = (musicId) => {
         setPlaylist(playlist.filter(music => music.mbid !== musicId));
@@ -74,7 +74,7 @@ const App = () => {
                 <div className="container">
                     {musics.map((music) => (
                         <MusicCard
-                            key={music.mbid || `${music.name}-${music.artist}`} 
+                            key={`${music.listeners}-${music.name}`} 
                             music={music}
                             onAdd={handleAdd} 
                         />
