@@ -8,7 +8,13 @@ const MusicCard = ({ music, onAdd }) => {
             </div>
             <div>
                 <img 
-                    src={Array.isArray(music.image) && music.image.length > 2 ? music.image[2]["#text"] : "https://via.placeholder.com/400"} 
+                    src={
+                        Array.isArray(music.image) && music.image.length > 0 
+                        ? music.image[0] && music.image[0]["#text"] 
+                            ? music.image[2]["#text"]
+                            : "https://via.placeholder.com/400" 
+                        : "https://via.placeholder.com/400"
+                    } 
                     alt={music.name} 
                 />
             </div>
