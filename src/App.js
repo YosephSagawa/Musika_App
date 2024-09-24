@@ -6,6 +6,7 @@ import SearchIcon from './search.svg';
 const API_KEY = "89838bf2d11d62f073e2804007089934";
 const API_URL = "https://ws.audioscrobbler.com/2.0/";
 
+
 const App = () => {
     const [musics, setMusic] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -81,6 +82,13 @@ const App = () => {
                             key={`${music.listeners}-${music.name}`} 
                             music={music}
                             onAdd={handleAdd} 
+                            onDelete={() => handleDeleteFromPlaylist(music)}
+                            onUpdate={() => {
+                                const newName = prompt("Enter new music name", music.name);
+                                if (newName) {
+                                    handleUpdatePlaylist(music, newName);
+                                }
+                            }}
                         />
                     ))}
                 </div>
@@ -95,13 +103,13 @@ const App = () => {
                     <h2>Your Playlist</h2>
                     <ul>
                         {playlist.map((music) => (
-                            <li key={music.mbid || `${music.name}-${music.artist}`}>
+                            <li key={`${music.listeners} - ${music.name}`}>
                                 {music.name} by {music.artist}
-                                <button onClick={() => handleDeleteFromPlaylist(music.mbid)}>Delete</button>
+                                <button onClick={() => handleDeleteFromPlaylist(music)}>Delete</button>
                                 <button onClick={() => {
                                     const newName = prompt("Enter new music name", music.name);
                                     if (newName) {
-                                        handleUpdatePlaylist(music.mbid, newName);
+                                        handleUpdatePlaylist(music, newName);
                                     }
                                 }}>
                                     Update
