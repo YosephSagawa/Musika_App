@@ -252,10 +252,18 @@ h1 {
 }
 
 .message {
-  margin: 20px 0;
-  padding: 10px;
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  background-color: rgba(0, 0, 0, 0.8); 
   color: #f9d3b4;
-  font-size: 1.2rem;
+  padding: 20px 40px; 
+  font-size: 1.5rem; 
+  border-radius: 12px; 
+  z-index: 1000; 
+  text-align: center;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4); 
 }
 
 
@@ -295,4 +303,27 @@ h1 {
 
 .playlist li:hover {
   background-color: #44474a;
+}
+
+.playlist button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #f44336; /* Red for delete */
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.playlist button:hover {
+  background-color: #d32f2f;
+}
+
+.playlist button:nth-of-type(2) {
+  background-color: #4CAF50; /* Green for update */
+}
+
+.playlist button:nth-of-type(2):hover {
+  background-color: #45a049;
 }
