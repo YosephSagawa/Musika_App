@@ -11,13 +11,13 @@ const API_URL = "https://ws.audioscrobbler.com/2.0/";
 const App = () => {
     const [musics, setMusic] = useState([]);
     const[searchTerm, setSearchTerm] = useState('');
+    const[message, setMessage] = useState('');
+    const[playlist, setPlaylist] = useState([]);
     const searchMusic = async (title) => {
         try {
             const response = await fetch(`${API_URL}?method=track.search&track=${title}&api_key=${API_KEY}&format=json`);
             const data = await response.json();
-            console.log("API response:",data);//log the entire response object
-            console.log(data.results.trackmatches.track);//log specific array from the response
-            setMusic(data.results.trackmatches.track); // Adjust based on API response structure
+            setMusic(data.results.trackmatches.track || []); // Adjust based on API response structure
         } catch (error) {
             console.error("Error fetching music data:", error);
         }
@@ -26,6 +26,22 @@ const App = () => {
     useEffect(() => {
         searchMusic('Starving');
     }, []);
+
+    const handleDelete = (musicName,artistName) =>{
+        setMusic(musics.filter(music => !(music.name === musicName && music.artist === artistName)));
+    };
+
+    const handleUpdate = (musicName,artistName, newName)  => {
+        setMusic(musics.map(music => 
+            music.name === musicName && music.artist === artistName
+             ? { ...music, name: newName} : music));
+    };
+
+    const handleAdd = (music) => {
+        setPlaylist([...playlist, music]);
+        setMessage(`${music.name} by ${music.artist} successfully added to playlist!`);
+        setTimeout(() => setMessage(''), 3000); 
+    };    
 
     return (
         <div className="app">
@@ -45,12 +61,19 @@ const App = () => {
                 />
             </div>
 
-            {
-                musics?.length>0
+            {message && <div className = "message">{message}</div>}
+
+            {musics?.length>0
                 ?(
                     <div className="container">
                     {musics.map((music) => (
-                        <MusicCard music={music}/>
+                        <MusicCard 
+                        key={`${music.name} - ${music.artist}`}
+                        music={music}
+                        onDelete={handleDelete}
+                        onUpdate={handleUpdate}
+                        onAdd={handleAdd}
+                        />
                     ))}
                  </div>
                 ):(
@@ -59,10 +82,18 @@ const App = () => {
                     </div>
                 )
             }
-
-
+            {playlist.length > 0 && (
+                <div className="playlist">
+                    <h2>Your Playlist</h2>
+                    <ul>
+                        {playlist.map((music, index) => (
+                            <li key={index}>{music.name} by {music.artist}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}        
         </div>
     );
-}
+};
 
 export default App;
