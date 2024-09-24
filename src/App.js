@@ -40,13 +40,17 @@ const App = () => {
     
         setTimeout(() => setMessage(''), 3000);
     };
-    const handleDeleteFromPlaylist = (musicId) => {
-        setPlaylist(playlist.filter(music => music.mbid !== musicId));
+    const handleDeleteFromPlaylist = (music) => {
+        setPlaylist(playlist.filter(
+            (track) => !(track.listeners === music.listeners && track.name === music.name)
+        ));
     };
 
-    const handleUpdatePlaylist = (musicId, newName) => {
-        setPlaylist(playlist.map(music =>
-            music.mbid === musicId ? { ...music, name: newName } : music
+    const handleUpdatePlaylist = (music, newName) => {
+        setPlaylist(playlist.map(
+            (track) => track.listeners === music.listeners && track.name === music.name
+                ? { ...track, name: newName }
+                : track
         ));
     };
 
