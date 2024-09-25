@@ -9,7 +9,8 @@ const store = configureStore({
   reducer: {
     music: musicReducer,
   },
-  middleware: [sagaMiddleware],
+  middleware: (getDefaultMiddleware) => 
+    getDefaultMiddleware().concat(sagaMiddleware),
 });
 
 sagaMiddleware.run(rootSaga);
