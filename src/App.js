@@ -13,6 +13,8 @@ const API_URL = "https://ws.audioscrobbler.com/2.0/";
 const AppContainer = styled.div`
   height: 100%; 
   width: 100%; 
+  border: 0;
+  margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -41,6 +43,7 @@ const SearchBox = styled.div`
   padding: 1.5rem 1.75rem;
   border-radius: 3rem;
   background: #1f2123;
+  -webkit-box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
   box-shadow: 5px 5px 7px #1c1d1f, -5px -5px 7px #222527;
 `;
 
@@ -149,8 +152,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    dispatch({ type: 'music/fetchMusic', payload: 'Starving' });
-  }, [dispatch]);
+    searchMusic('Starving');
+  }, []);
 
   const handleAdd = (music) => {
     dispatch(addToPlaylist(music));
