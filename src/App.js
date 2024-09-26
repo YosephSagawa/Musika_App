@@ -1,18 +1,30 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect,useState } from 'react';
+import React, { useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import './reset.css';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import MusicCard from './MusicCard';
 import SearchIcon from './search.svg';
 import { setSearchTerm, addToPlaylist, deleteFromPlaylist, updatePlaylist, clearMessage } from './store/musicSlice.js';
 
-const API_KEY = "89838bf2d11d62f073e2804007089934";
-const API_URL = "https://ws.audioscrobbler.com/2.0/";
+const GlobalStyles = css`
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #212426; /* Ensure the background is applied globally */
+  }
+
+  #root {
+    height: 100%;
+  }
+`;
 
 const AppContainer = styled.div`
   height: 100%; 
-  width: 100%; 
+  width: 100%;
+  background-size: cover; 
   border: 0;
   margin: 0;
   display: flex;
@@ -20,6 +32,7 @@ const AppContainer = styled.div`
   align-items: center;
   flex-direction: column;
   background-color: #212426;
+  padding-top: 4rem;
 `;
 
 
@@ -137,23 +150,13 @@ const Button = styled.button`
 
 const App = () => {
   const dispatch = useDispatch();
-  const {message, playlist, searchTerm } = useSelector((state) => state.music);
+  const {musics,message, playlist, searchTerm } = useSelector((state) => state.music);
 
-  const [musicList, setMusicList] = useState([]);
-
-  const searchMusic = async (title) => {
-    try {
-      const response = await fetch(`${API_URL}?method=track.search&track=${title}&api_key=${API_KEY}&format=json`);
-      const data = await response.json();
-      setMusicList(data.results.trackmatches.track || []);
-    } catch (error) {
-      console.error("Error fetching music data:", error);
-    }
-  };
-
+  
   useEffect(() => {
-    searchMusic('Starving');
-  }, []);
+    dispatch({ type: 'music/fetchMusic', payload: 'Starving' }); // Fetch 'Starving' by default
+  }, [dispatch]);
+
 
   const handleAdd = (music) => {
     dispatch(addToPlaylist(music));
@@ -172,70 +175,70 @@ const App = () => {
   };
 
   return (
-    <AppContainer>
-      <Heading>Musika</Heading>
-      {message && <Message>{message}</Message>}
-      <SearchBox>
-        <SearchInput
-          type="text"
-          placeholder="Search for music"
-          value={searchTerm}
-          onChange={(e) => dispatch(setSearchTerm(e.target.value))}
-        />
-        <SearchButton
-          src={SearchIcon}
-          alt="search"
-          onClick={() => searchMusic(searchTerm)}
-        />
-      </SearchBox>
-      {musicList?.length > 0 ? (
-        <div css={css`
-          width: 100%;
-          margin-top: 3rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-wrap: wrap;
-        `}>
-          {musicList.map((music) => (
-            <MusicCard
-              key={`${music.listeners}-${music.name}`}
-              music={music}
-              onAdd={handleAdd}
-            />
-          ))}
-        </div>
-      ) : (
-        <div css={css`
-          width: 100%;
-          margin-top: 3rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        `}>
-          <h2 css={css`
-            font-size: 1.25rem;
-            color: #f9d3b4;
-            font-family: "Raleway", sans-serif;
-          `}>No music found</h2>
-        </div>
-      )}
-
-      {playlist.length > 0 && (
-        <PlaylistContainer>
-          <PlaylistHeading>Your Playlist</PlaylistHeading>
-          <ul>
-            {playlist.map((music) => (
-              <PlaylistItem key={`${music.listeners} - ${music.name}`}>
-                {music.name} by {music.artist}
-                <Button onClick={() => handleDeleteFromPlaylist(music)}>Delete</Button>
-                <Button onClick={() => handleUpdatePlaylist(music)}>Update</Button>
-              </PlaylistItem>
+    <div css={GlobalStyles}>
+      <AppContainer>
+        <Heading>Musika</Heading>
+        {message && <Message>{message}</Message>}
+        <SearchBox>
+          <SearchInput
+            type="text"
+            placeholder="Search for music"
+            value={searchTerm}
+            onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+          />
+          <SearchButton
+            src={SearchIcon}
+            alt="search"
+            onClick={() => dispatch({ type: 'music/fetchMusic', payload: searchTerm })}
+          />
+        </SearchBox>
+        {musics?.length > 0 ? (
+          <div css={css`
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+          `}>
+            {musics.map((music) => (
+              <MusicCard
+                key={`${music.listeners}-${music.name}`}
+                music={music}
+                onAdd={handleAdd}
+              />
             ))}
-          </ul>
-        </PlaylistContainer>
-      )}
-    </AppContainer>
+          </div>
+        ) : (
+          <div css={css`
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}>
+            <h2 css={css`
+              font-size: 1.25rem;
+              color: #f9d3b4;
+              font-family: "Raleway", sans-serif;
+            `}>No music found</h2>
+          </div>
+        )}
+
+        {playlist.length > 0 && (
+          <PlaylistContainer>
+            <PlaylistHeading>Your Playlist</PlaylistHeading>
+            <ul>
+              {playlist.map((music) => (
+                <PlaylistItem key={`${music.listeners} - ${music.name}`}>
+                  {music.name} by {music.artist}
+                  <Button onClick={() => handleDeleteFromPlaylist(music)}>Delete</Button>
+                  <Button onClick={() => handleUpdatePlaylist(music)}>Update</Button>
+                </PlaylistItem>
+              ))}
+            </ul>
+          </PlaylistContainer>
+        )}
+      </AppContainer>
+    </div>    
   );
 };
 
