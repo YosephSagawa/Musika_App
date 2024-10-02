@@ -154,23 +154,23 @@ const App = () => {
 
   
   useEffect(() => {
-    dispatch({ type: 'music/fetchMusic', payload: 'Starving' }); // Fetch 'Starving' by default
+    dispatch({ type: 'music/fetchMusic', payload: 'Starving' });
   }, [dispatch]);
 
 
   const handleAdd = (music) => {
-    dispatch(addToPlaylist(music));
+    dispatch({ type: 'music/addToPlaylist', payload: music });
     setTimeout(() => dispatch(clearMessage()), 3000);
   };
 
   const handleDeleteFromPlaylist = (music) => {
-    dispatch(deleteFromPlaylist(music));
+    dispatch({ type: 'music/deleteFromPlaylist', payload: music });
   };
 
   const handleUpdatePlaylist = (music) => {
     const newName = prompt("Enter new music name", music.name);
     if (newName) {
-      dispatch(updatePlaylist({ music, newName }));
+      dispatch({ type: 'music/updatePlaylist', payload: { music, newName } });
     }
   };
 
