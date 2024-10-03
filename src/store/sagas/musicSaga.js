@@ -16,16 +16,13 @@ function* fetchMusic(action) {
 
 function* addToPlaylist(action) {
   try {
-    const currentPlaylist = yield select((state) => state.music.playlist); // Get current playlist from Redux state
-
-    // Check if the song is already in the playlist to avoid duplicates
+    const currentPlaylist = yield select((state) => state.music.playlist);
     const isAlreadyInPlaylist = currentPlaylist.some(
       (song) => song.name === action.payload.name && song.artist === action.payload.artist
     );
-
     if (!isAlreadyInPlaylist) {
-      const updatedPlaylist = [...currentPlaylist, action.payload]; // Add new song to playlist
-      yield put(setPlaylist(updatedPlaylist)); // Update playlist in Redux state
+      const updatedPlaylist = [...currentPlaylist, action.payload]; 
+      yield put(setPlaylist(updatedPlaylist));
       yield put(setMessage(`${action.payload.name} successfully added to playlist!`));
     } else {
       yield put(setMessage(`${action.payload.name} is already in the playlist!`));
